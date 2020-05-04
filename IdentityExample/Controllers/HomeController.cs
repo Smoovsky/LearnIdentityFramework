@@ -6,32 +6,74 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using IdentityExample.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityExample.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            UserManager<IdentityUser> userManager)
         {
             _logger = logger;
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        [Authorize]
+        public async Task<IActionResult> Secret()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Login()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
+        }
+
+        public IActionResult Register(
+            string username,
+            string password
+        )
+        {
+            return View();
+        }
+
+        public IActionResult Login(
+            string username,
+            string password
+        )
+        {
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Register(
+            string username,
+            string password
+        )
+        {
+            var user = new IdentityUser()
+            {
+                UserName = username
+            };
+
+            var result = _userManager.CreateAsync(user, password).Result;
+
+            if(result.Succeeded)
+            {
+                // EP2 20:00
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
