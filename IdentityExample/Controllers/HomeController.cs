@@ -16,12 +16,16 @@ namespace IdentityExample.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
 
+        private readonly SignInManager<IdentityUser> _signInManager;
+
         public HomeController(
             ILogger<HomeController> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             _logger = logger;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> Index()
@@ -40,22 +44,39 @@ namespace IdentityExample.Controllers
             return View();
         }
 
-        public IActionResult Register(
-            string username,
-            string password
-        )
-        {
-            return View();
-        }
-
+        [HttpPost]
         public IActionResult Login(
             string username,
             string password
         )
         {
+            var user = _userManager.FindByNameAsync(username).Result;
+
+            if (user != null)
+            {
+                var signInResult = _signInManager
+                .PasswordSignInAsync(
+                    username,
+                    password,
+                    false,
+                    false
+                ).Result;
+
+                if (signInResult.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
             return RedirectToAction("Index");
         }
 
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
         public IActionResult Register(
             string username,
             string password
@@ -68,10 +89,29 @@ namespace IdentityExample.Controllers
 
             var result = _userManager.CreateAsync(user, password).Result;
 
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
-                // EP2 20:00
+                var signInResult = _signInManager
+                .PasswordSignInAsync(
+                    username,
+                    password,
+                    false,
+                    false
+                ).Result;
+
+                if (signInResult.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
             }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult LogOut()
+        {
+            _signInManager.SignOutAsync().Wait();
 
             return RedirectToAction("Index");
         }
