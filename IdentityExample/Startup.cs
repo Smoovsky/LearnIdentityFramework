@@ -47,13 +47,14 @@ namespace IdentityExample
                 c.Password.RequireDigit = false;
                 c.Password.RequireNonAlphanumeric = false;
                 c.Password.RequireUppercase = false; // test if this works
+                c.Password.RequireLowercase = false; // test if this works
             });
 
             services.ConfigureApplicationCookie(
                 config =>
                 {
                     config.Cookie.Name = "Identity.Cookie";
-                    config.LoginPath = "home/login";
+                    config.LoginPath = "/home/login";
                 });
         }
 
