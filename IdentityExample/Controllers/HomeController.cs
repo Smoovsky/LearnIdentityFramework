@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using IdentityExample.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using NETCore.MailKit.Core;
 
 namespace IdentityExample.Controllers
 {
@@ -17,15 +18,18 @@ namespace IdentityExample.Controllers
         private readonly UserManager<IdentityUser> _userManager;
 
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IEmailService _emailService;
 
         public HomeController(
             ILogger<HomeController> logger,
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            IEmailService emailService)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         public async Task<IActionResult> Index()
@@ -71,6 +75,19 @@ namespace IdentityExample.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult VerifyEmail(string userId, string code)
+        {
+            var user = _userManager.FindByIdAsync(userId).Result;
+
+            if (user == null) return BadRequest();
+
+            var result = _userManager.ConfirmEmailAsync(user, code).Result;
+
+            if (result.Succeeded) return View();
+
+            return BadRequest();
+        }
+
         public IActionResult Register()
         {
             return View();
@@ -91,22 +108,39 @@ namespace IdentityExample.Controllers
 
             if (result.Succeeded)
             {
-                var signInResult = _signInManager
-                .PasswordSignInAsync(
-                    username,
-                    password,
-                    false,
-                    false
-                ).Result;
+                var code = _userManager
+                    .GenerateEmailConfirmationTokenAsync(user)
+                    .Result;
 
-                if (signInResult.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
+                var link = Url.Action(
+                    nameof(VerifyEmail),
+                    "Home",
+                    new { userId = user.Id, code },
+                    Request.Scheme,
+                    Request.Host.ToString());
+
+                _emailService.Send("baka@qq.com", "Email Verify", $"<a href=\"{link}\">Verify your email</a>", true);
+
+                return RedirectToAction("EmailVerification");
+
+                // var signInResult = _signInManager
+                // .PasswordSignInAsync(
+                //     username,
+                //     password,
+                //     false,
+                //     false
+                // ).Result;
+
+                // if (signInResult.Succeeded)
+                // {
+                //     return RedirectToAction("Index");
+                // }
             }
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult EmailVerification() => View();
 
         [HttpPost]
         public IActionResult LogOut()
