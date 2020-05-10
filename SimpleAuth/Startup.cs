@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +30,17 @@ namespace LearnIdentityFramework
                     config.Cookie.Name = "Auth";
                     config.LoginPath = "/Home/Authenticate";
                 });
+
+            services.AddAuthorization(config =>
+            {
+                var defualtPolicyBuilder = new AuthorizationPolicyBuilder();
+
+                var defaultPolicy = defualtPolicyBuilder
+                    .RequireAuthenticatedUser() // this is the default behavior
+                    .Build();
+
+                config.DefaultPolicy = defaultPolicy;
+            });
 
             services.AddControllersWithViews();
             // services.AddRazorPages();
