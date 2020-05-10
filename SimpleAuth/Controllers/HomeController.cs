@@ -26,7 +26,8 @@ namespace SimpleAuth.Controllers
             {
                 new Claim(ClaimTypes.Name, "Shaun"),
                 new Claim(ClaimTypes.Email, "abc@abc.com"),
-                new Claim("CustomClaim", "CustomVal")
+                new Claim("CustomClaim", "CustomVal"),
+                new Claim(ClaimTypes.DateOfBirth, "2000-Jan-01")
             };
 
             var officialClaims = new List<Claim>()
