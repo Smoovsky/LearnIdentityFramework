@@ -34,17 +34,34 @@ namespace LearnIdentityFramework
 
             services.AddAuthorization(config =>
             {
-                var defualtPolicyBuilder = new AuthorizationPolicyBuilder();
+                // var defualtPolicyBuilder = new AuthorizationPolicyBuilder();
 
-                var defaultPolicy = defualtPolicyBuilder
-                    .RequireAuthenticatedUser() // this is the default behavior
-                    .RequireClaim(ClaimTypes.DateOfBirth)
-                    .Build();
+                // var defaultPolicy = defualtPolicyBuilder
+                //     .RequireAuthenticatedUser() // this is the default behavior
+                //     .RequireClaim(ClaimTypes.DateOfBirth)
+                //     .Build();
 
-                config.DefaultPolicy = defaultPolicy;
+                // config.DefaultPolicy = defaultPolicy;
+
+                // try to implement this in a custom way
+                // config.AddPolicy(
+                //     "Claim.DOB",
+                //     policyBuilder => 
+                //     {
+                //         policyBuilder.RequireClaim(ClaimTypes.DateOfBirth);
+                //     });
+
+                config.AddPolicy(
+                    "Claim.DOB",
+                    policyBuilder => 
+                    {
+                        policyBuilder.AddRequirements(new CustomClaimRequirement(ClaimTypes.DateOfBirth));
+                    });
             });
 
             services.AddControllersWithViews();
+
+            services.AddScoped<IAuthorizationHandler, CustomClaimAuthHandler>();
             // services.AddRazorPages();
         }
 

@@ -14,7 +14,7 @@ namespace SimpleAuth.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Policy = "Claim.DOB")]
         public async Task<IActionResult> Secret()
         {
             return View();
