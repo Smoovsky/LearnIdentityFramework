@@ -26,6 +26,19 @@ namespace SimpleAuth.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin,Manager")] // legacy .net code, role is now abstracte as one claimtype
+        public async Task<IActionResult> SecretRequireAdminOrManageer()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Manager")] // legacy .net code, role is now abstracte as one claimtype
+        [Authorize(Roles = "Admin")] // legacy .net code, role is now abstracte as one claimtype
+        public async Task<IActionResult> SecretRequireAdminAndManageer()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Authenticate()
         {
             var customClaims = new List<Claim>()
