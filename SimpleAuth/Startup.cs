@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -37,6 +38,7 @@ namespace LearnIdentityFramework
 
                 var defaultPolicy = defualtPolicyBuilder
                     .RequireAuthenticatedUser() // this is the default behavior
+                    .RequireClaim(ClaimTypes.DateOfBirth)
                     .Build();
 
                 config.DefaultPolicy = defaultPolicy;
