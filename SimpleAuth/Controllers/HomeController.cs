@@ -20,6 +20,12 @@ namespace SimpleAuth.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")] // legacy .net code, role is now abstracte as one claimtype
+        public async Task<IActionResult> SecretRequireAdmin()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Authenticate()
         {
             var customClaims = new List<Claim>()
@@ -27,7 +33,8 @@ namespace SimpleAuth.Controllers
                 new Claim(ClaimTypes.Name, "Shaun"),
                 new Claim(ClaimTypes.Email, "abc@abc.com"),
                 new Claim("CustomClaim", "CustomVal"),
-                new Claim(ClaimTypes.DateOfBirth, "2000-Jan-01")
+                new Claim(ClaimTypes.DateOfBirth, "2000-Jan-01"),
+                new Claim(ClaimTypes.DateOfBirth, "2000-Jan-01"),
             };
 
             var officialClaims = new List<Claim>()
