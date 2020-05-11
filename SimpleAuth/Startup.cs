@@ -62,7 +62,7 @@ namespace LearnIdentityFramework
 
             services.AddControllersWithViews(config =>
             {
-                config.Filters.Add(new AuthorizeFilter());
+                // config.Filters.Add(new AuthorizeFilter());
             });
 
             services.AddScoped<IAuthorizationHandler, CustomClaimAuthHandler>();
