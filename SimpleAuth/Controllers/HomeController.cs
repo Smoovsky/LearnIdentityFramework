@@ -65,5 +65,23 @@ namespace SimpleAuth.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public IActionResult AuthorizationServiceTest(
+            [FromServices] IAuthorizationService authService
+        )
+        {
+            var testPolicy = new AuthorizationPolicyBuilder("TestPolicy")
+                            .RequireClaim("233")
+                            .Build();
+
+            var authResult = authService.AuthorizeAsync(User, testPolicy).Result;
+
+            if (authResult.Succeeded)
+            {
+                // do stuff
+            }
+
+            return Ok();
+        }
     }
 }
