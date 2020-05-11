@@ -39,6 +39,7 @@ namespace SimpleAuth.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Authenticate()
         {
             var customClaims = new List<Claim>()
