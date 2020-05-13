@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SimpleAuth.ClaimTransform;
 
 namespace LearnIdentityFramework
 {
@@ -67,6 +69,7 @@ namespace LearnIdentityFramework
 
             services.AddScoped<IAuthorizationHandler, CustomClaimAuthHandler>();
             // services.AddRazorPages();
+            services.AddScoped<IClaimsTransformation, ClaimTransformer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
