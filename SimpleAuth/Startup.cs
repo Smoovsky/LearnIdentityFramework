@@ -68,7 +68,12 @@ namespace LearnIdentityFramework
             });
 
             services.AddScoped<IAuthorizationHandler, CustomClaimAuthHandler>();
-            // services.AddRazorPages();
+
+            services.AddRazorPages(config =>
+            {
+                // config
+            });
+
             services.AddScoped<IClaimsTransformation, ClaimTransformer>();
         }
 
@@ -101,7 +106,7 @@ namespace LearnIdentityFramework
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                // endpoints.MapRazorPages();
+                endpoints.MapRazorPages();
             });
         }
     }

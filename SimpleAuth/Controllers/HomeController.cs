@@ -105,6 +105,8 @@ namespace SimpleAuth.Controllers
             {
                 // do stuff
             }
+
+            return Ok();
         }
     }
 }
