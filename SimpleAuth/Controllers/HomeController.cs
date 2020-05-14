@@ -1,14 +1,36 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using LearnIdentityFramework;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SimpleAuth.Controllers
 {
+    public class SecurityLevelAuthAttribute : AuthorizeAttribute
+    {
+        public SecurityLevelAuthAttribute(
+            int lv
+        ) : base($"{DynamicPolicies.SecurityLevel}.{lv}")
+        {
+        }
+    }
+
     public class HomeController : Controller
     {
+        [SecurityLevelAuth(5)]
+        public IActionResult SecurityLevel()
+        {
+            return Ok();
+        }
+
+        [SecurityLevelAuth(10)]
+        public IActionResult SecurityLevelHigher()
+        {
+            return Ok();
+        }
+
         public async Task<IActionResult> Index()
         {
             return View();
@@ -49,6 +71,7 @@ namespace SimpleAuth.Controllers
                 new Claim("CustomClaim", "CustomVal"),
                 new Claim(ClaimTypes.DateOfBirth, "2000-Jan-01"),
                 new Claim(ClaimTypes.DateOfBirth, "2000-Jan-01"),
+                new Claim(DynamicPolicies.SecurityLevel, "6"),
             };
 
             var officialClaims = new List<Claim>()

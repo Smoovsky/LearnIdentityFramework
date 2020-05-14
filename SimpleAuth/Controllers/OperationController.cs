@@ -33,7 +33,7 @@ namespace IdentityExample.Controllers
         }
     }
 
-    public class SampleAuthHandler
+    public class SampleOperationAuthHandler
         : AuthorizationHandler<OperationAuthorizationRequirement> // need to be added to service
     {
         protected override Task HandleRequirementAsync(

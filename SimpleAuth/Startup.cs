@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityExample.Controllers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -68,6 +69,9 @@ namespace LearnIdentityFramework
             });
 
             services.AddScoped<IAuthorizationHandler, CustomClaimAuthHandler>();
+            services.AddScoped<IAuthorizationHandler, SampleOperationAuthHandler>();
+            services.AddScoped<IAuthorizationHandler, SecurityLevelHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, CustomPolicyProvider>();
             // services.AddRazorPages();
             services.AddScoped<IClaimsTransformation, ClaimTransformer>();
         }
