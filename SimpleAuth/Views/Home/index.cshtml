@@ -6,3 +6,13 @@
 {
     <h1>User Has DOB</h1>
 }
+
+@* Simple Check *@
+@if(User.Identity.IsAuthenticated)
+{
+    <h1>User is authenticated</h1>
+}
+else
+{
+    <h1>User is not authenticated</h1>
+}
