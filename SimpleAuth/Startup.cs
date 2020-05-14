@@ -71,7 +71,10 @@ namespace LearnIdentityFramework
 
             services.AddRazorPages(config =>
             {
-                // config
+                config.Conventions.AuthorizePage("/Secured");
+                config.Conventions.AuthorizePage("/Secured", "Claim.DOB"); // require policy here
+                // config.Conventions.AuthorizeFolder("/Secured", "Claim.DOB"); 
+                // config.Conventions.AllowAnonymousToPage("/Secured");
             });
 
             services.AddScoped<IClaimsTransformation, ClaimTransformer>();
