@@ -9,6 +9,13 @@ namespace SimpleAuth.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IAuthorizationService _authorizationService;
+
+        public HomeController(IAuthorizationService authorizationService)
+        {
+            _authorizationService = authorizationService;
+        }
+
         public async Task<IActionResult> Index()
         {
             return View();
@@ -64,6 +71,24 @@ namespace SimpleAuth.Controllers
             await HttpContext.SignInAsync(resultUserPrincipal);
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult AuthorizationServiceSample()
+        {
+            var customPolicy = new AuthorizationPolicyBuilder() // default scheme
+                                .RequireClaim("Sample")
+                                .Build();
+
+            var authResult = _authorizationService
+                        .AuthorizeAsync(HttpContext.User, customPolicy)
+                        .Result;
+
+            if(authResult.Succeeded)
+            {
+                // do stuff
+            }
+
+            return View("Index");
         }
     }
 }
