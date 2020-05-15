@@ -29,6 +29,8 @@ namespace SimpleAuth.Controllers
         public IActionResult SecurityLevelHigher()
         {
             return Ok();
+        }
+
         private readonly IAuthorizationService _authorizationService;
 
         public HomeController(IAuthorizationService authorizationService)
