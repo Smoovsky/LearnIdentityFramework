@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -29,6 +30,13 @@ namespace OAuthServer.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        // [Authorize(AuthenticationSchemes = "OAuth")] // working
+        [Authorize] // not working
+        public IActionResult Secret()
+        {
+            return Ok();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

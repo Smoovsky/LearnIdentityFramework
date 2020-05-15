@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace OAuthServer
 {
@@ -26,8 +27,19 @@ namespace OAuthServer
             services.AddAuthentication("OAuth")
                 .AddJwtBearer("OAuth", config =>
                 {
-                
+                    config.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidIssuers = new[] { Constants.Issuer },
+                        ValidAudience = Constants.Audiance,
+                        IssuerSigningKey =
+                        new SymmetricSecurityKey(
+                            System.Text.Encoding.UTF8.GetBytes(Constants.Secret))
+                    };
                 });
+
+            // services.AddAuthorization();
 
             services.AddControllersWithViews();
         }
@@ -49,6 +61,8 @@ namespace OAuthServer
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
