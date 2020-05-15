@@ -5,6 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "OAuthServer",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildOAuthServer",
+            "program": "${workspaceFolder}/OAuthServer/bin/Debug/netcoreapp5.0/OAuthServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/OAuthServer",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "SimpleAuth",
             "type": "coreclr",
             "request": "launch",
