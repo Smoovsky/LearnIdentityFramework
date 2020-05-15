@@ -73,6 +73,15 @@ namespace LearnIdentityFramework
             services.AddScoped<IAuthorizationHandler, SecurityLevelHandler>();
             services.AddSingleton<IAuthorizationPolicyProvider, CustomPolicyProvider>();
             // services.AddRazorPages();
+
+            services.AddRazorPages(config =>
+            {
+                config.Conventions.AuthorizePage("/Secured");
+                config.Conventions.AuthorizePage("/Secured", "Claim.DOB"); // require policy here
+                // config.Conventions.AuthorizeFolder("/Secured", "Claim.DOB"); 
+                // config.Conventions.AllowAnonymousToPage("/Secured");
+            });
+
             services.AddScoped<IClaimsTransformation, ClaimTransformer>();
         }
 
@@ -105,7 +114,7 @@ namespace LearnIdentityFramework
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                // endpoints.MapRazorPages();
+                endpoints.MapRazorPages();
             });
         }
     }

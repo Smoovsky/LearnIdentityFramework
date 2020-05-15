@@ -1,4 +1,11 @@
 <h1>Home</h1>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService authorizationService
+
+@if((await authorizationService.AuthorizeAsync(User, "Claim.DOB")).Succeeded)
+{
+    <h1>User Has DOB</h1>
+}
 
 @* Simple Check *@
 @if(User.Identity.IsAuthenticated)
