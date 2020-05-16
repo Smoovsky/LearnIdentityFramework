@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,19 @@ namespace OAuthServer
             services.AddAuthentication("OAuth")
                 .AddJwtBearer("OAuth", config =>
                 {
+                    config.Events = new JwtBearerEvents()
+                    {
+                        OnMessageReceived = cxt =>
+                            {
+                                if (cxt.Request.Query.ContainsKey("jwt"))
+                                {
+                                    cxt.Token = cxt.Request.Query["jwt"]; //https://localhost:5001/home/secret?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYW1wbGVJZCIsIlNhbXBsZUNsYWltVHlwZSI6InNhbXBsZVZhbHVlIiwibmJmIjoxNTg5NjE3NTcwLCJleHAiOjE1ODk3MDM5NzAsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxIn0.pjPmRwHnEHcTn_qcK0dK8OQISh1tK9SyPUv9jU7ywuc
+                                }
+
+                                return Task.CompletedTask;
+                            }
+                    };
+
                     config.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuer = true,
