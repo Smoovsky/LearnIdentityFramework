@@ -39,6 +39,13 @@ namespace OAuthServer.Controllers
             return Ok();
         }
 
+        public IActionResult Decode(string jwt)
+        {
+            var bytes = Convert.FromBase64String(jwt);
+
+            return Ok(System.Text.Encoding.UTF8.GetString(bytes));
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

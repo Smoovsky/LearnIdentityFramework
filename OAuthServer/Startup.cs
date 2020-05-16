@@ -34,6 +34,7 @@ namespace OAuthServer
                             {
                                 if (cxt.Request.Query.ContainsKey("jwt"))
                                 {
+                                    // similarly, cookie
                                     cxt.Token = cxt.Request.Query["jwt"]; //https://localhost:5001/home/secret?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYW1wbGVJZCIsIlNhbXBsZUNsYWltVHlwZSI6InNhbXBsZVZhbHVlIiwibmJmIjoxNTg5NjE3NTcwLCJleHAiOjE1ODk3MDM5NzAsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwMDEiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxIn0.pjPmRwHnEHcTn_qcK0dK8OQISh1tK9SyPUv9jU7ywuc
                                 }
 
