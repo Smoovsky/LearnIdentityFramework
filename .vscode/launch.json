@@ -28,7 +28,7 @@
             "name": "OAuthClient",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "buildOAuthServer",
+            "preLaunchTask": "buildOAuthClient",
             "program": "${workspaceFolder}/OAuthClient/bin/Debug/netcoreapp5.0/OAuthClient.dll",
             "args": [],
             "cwd": "${workspaceFolder}/OAuthClient",

@@ -25,7 +25,30 @@ namespace OAuthClient
         {
             services.AddControllersWithViews();
 
-            services.AddAuthentication();
+            services.AddAuthentication(config =>
+            {
+                config.DefaultAuthenticateScheme = "CookieScheme";
+
+                config.DefaultSignInScheme = "CookieScheme";
+
+                config.DefaultChallengeScheme = "OAuthScheme";
+            })
+            .AddCookie("CookieScheme")
+            .AddOAuth("OAuthScheme", config =>
+            {
+                config.CallbackPath = "/oauth/callback"; // can customized to others
+
+                config.ClientId = "oauthclient";
+
+                config.AuthorizationEndpoint = "https://localhost:5001/oauth/authorize";
+
+                config.TokenEndpoint = "https://localhost:5001/oauth/token";
+
+                config.ClientSecret = "ClientSecret";
+
+                config.SaveTokens = true;
+
+            });
 
             services.AddAuthorization();
         }
