@@ -25,6 +25,26 @@
             }
         },
         {
+            "name": "OAuthClient",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildOAuthServer",
+            "program": "${workspaceFolder}/OAuthClient/bin/Debug/netcoreapp5.0/OAuthClient.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/OAuthClient",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "SimpleAuth",
             "type": "coreclr",
             "request": "launch",

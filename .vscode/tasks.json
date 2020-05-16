@@ -26,6 +26,18 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "buildOAuthClient",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/OAuthClient/OAuthClient.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "buildSimpleAuth",
             "command": "dotnet",
             "type": "process",
