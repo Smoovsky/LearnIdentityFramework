@@ -35,6 +35,8 @@ namespace OAuthClient.Controllers
         {
             var token = HttpContext.GetTokenAsync("access_token").Result; // stored in cookie
 
+            var claims = HttpContext.User.Claims; // oauth claims persisted by configuring behavior of OnTickCreated
+
             return View();
         }
 

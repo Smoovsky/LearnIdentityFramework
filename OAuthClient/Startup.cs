@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace OAuthClient
 {
@@ -48,6 +49,32 @@ namespace OAuthClient
 
                 config.SaveTokens = true;
 
+                config.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents()
+                {
+                    OnCreatingTicket = cxt =>
+                    {
+                        var token = cxt.AccessToken;
+
+                        var payload = token.Split(".")[1];
+
+                        var mod = 4 - (payload.Length % 4);
+
+                        var pad = string.Concat(Enumerable.Range(0, mod).Select(_ => "="));
+
+                        var claims = JsonConvert
+                        .DeserializeObject<Dictionary<string, string>>(
+                            System.Text.Encoding.UTF8.GetString(
+                                Convert.FromBase64String(payload + pad))
+                        );
+
+                        foreach (var claim in claims)
+                        {
+                            cxt.Identity.AddClaim(new System.Security.Claims.Claim(claim.Key, claim.Value));
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddAuthorization();
