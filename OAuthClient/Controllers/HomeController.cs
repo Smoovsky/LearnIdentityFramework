@@ -56,8 +56,11 @@ namespace OAuthClient.Controllers
         {
             var token = HttpContext.GetTokenAsync("access_token").Result;
 
-            _httpClientFactory
-            // var req = new 
+            var client = _httpClientFactory.CreateClient();
+
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+            var response = client.GetAsync("https://localhost:5001/secret/Secret").Result;
 
             return Ok();
         }

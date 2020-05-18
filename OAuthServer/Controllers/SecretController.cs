@@ -23,7 +23,7 @@ namespace OAuthServer.Controllers
         }
 
         [Authorize]
-        public string Index()
+        public string Secret()
         {
             return "server secret";
         }
