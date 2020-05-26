@@ -79,5 +79,17 @@ namespace OAuthServer.Controllers
 
             return Ok(new { token });
         }
+
+        [Authorize]
+        public IActionResult ValidateToken()
+        {
+            if (HttpContext.Request.Query.TryGetValue("token", out var token))
+            {
+                return Ok();
+            }
+
+
+            return BadRequest();
+        }
     }
 }

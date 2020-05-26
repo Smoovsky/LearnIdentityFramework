@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,21 +19,37 @@ namespace OAuthResourceApi
 
     }
 
-    public class AuthorizationHandler : AuthorizationHandler<JwtRequirement>
+    public class JwtHandler : AuthorizationHandler<JwtRequirement>
     {
         private readonly HttpClient _httpClient;
 
-        public AuthorizationHandler(
-            IHttpClientFactory clientFactory
+        private readonly HttpContext _httpContext;
+
+        public JwtHandler(
+            IHttpClientFactory clientFactory,
+            IHttpContextAccessor httpContextAccessor
         )
         {
             _httpClient = clientFactory.CreateClient();
+            _httpContext = httpContextAccessor.HttpContext;
         }
 
         protected override Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
             JwtRequirement requirement)
         {
+            if (_httpContext.Request.Query.TryGetValue("Authorization", out var authHeader))
+            {
+                var accessToken = authHeader.ToString().Split(" ")[1];
+
+                var validateRes = _httpClient.GetAsync($"https://localhost:5001/home/ValidateToken?token={accessToken}").Result;
+
+                if(validateRes.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    context.Succeed(requirement);
+                }
+            }
+
             return Task.CompletedTask;
         }
     }
@@ -58,6 +75,7 @@ namespace OAuthResourceApi
                 var defaultPolicy = defualtPolicyBuilder
                     // .RequireAuthenticatedUser()
                     // .
+                    .AddRequirements(new JwtRequirement())
                     .Build();
 
                 config.DefaultPolicy = defaultPolicy;
@@ -65,7 +83,12 @@ namespace OAuthResourceApi
 
             services.AddControllersWithViews();
 
-            services.AddHttpClient();
+            services
+            .AddHttpClient()
+            .AddHttpContextAccessor();
+
+            services
+            .AddScoped<IAuthorizationHandler, JwtHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -62,6 +62,8 @@ namespace OAuthClient.Controllers
 
             var response = client.GetAsync("https://localhost:5001/secret/Secret").Result;
 
+            var api = client.GetAsync("https://localhost:5004/secret/Secret").Result;
+
             return Ok();
         }
     }
