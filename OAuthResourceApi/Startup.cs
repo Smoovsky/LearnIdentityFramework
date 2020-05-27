@@ -38,11 +38,11 @@ namespace OAuthResourceApi
             AuthorizationHandlerContext context,
             JwtRequirement requirement)
         {
-            if (_httpContext.Request.Query.TryGetValue("Authorization", out var authHeader))
+            if (_httpContext.Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
                 var accessToken = authHeader.ToString().Split(" ")[1];
 
-                var validateRes = _httpClient.GetAsync($"https://localhost:5001/home/ValidateToken?token={accessToken}").Result;
+                var validateRes = _httpClient.GetAsync($"https://localhost:5001/home/ValidateToken?jwt={accessToken}").Result;
 
                 if(validateRes.StatusCode == System.Net.HttpStatusCode.OK)
                 {

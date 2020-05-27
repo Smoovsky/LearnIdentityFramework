@@ -52,6 +52,7 @@ namespace OAuthClient.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Authorize]
         public IActionResult ServerSecretTest() 
         {
             var token = HttpContext.GetTokenAsync("access_token").Result;
@@ -62,7 +63,7 @@ namespace OAuthClient.Controllers
 
             var response = client.GetAsync("https://localhost:5001/secret/Secret").Result;
 
-            var api = client.GetAsync("https://localhost:5004/secret/Secret").Result;
+            var apiResponse = client.GetAsync("https://localhost:5004/secret/index").Result;
 
             return Ok();
         }

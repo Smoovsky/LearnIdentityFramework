@@ -14,6 +14,18 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "buildOAuthResourceApi",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/OAuthResourceApi/OAuthResourceApi.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
             "label": "buildOAuthServer",
             "command": "dotnet",
             "type": "process",

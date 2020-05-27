@@ -83,7 +83,7 @@ namespace OAuthServer.Controllers
         [Authorize]
         public IActionResult ValidateToken()
         {
-            if (HttpContext.Request.Query.TryGetValue("token", out var token))
+            if (HttpContext.Request.Query.TryGetValue("jwt", out var token))
             {
                 return Ok();
             }
