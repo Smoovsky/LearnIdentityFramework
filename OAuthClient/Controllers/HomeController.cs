@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using OAuthClient.Models;
 
 namespace OAuthClient.Controllers
@@ -53,7 +55,36 @@ namespace OAuthClient.Controllers
         }
 
         [Authorize]
-        public IActionResult ServerSecretTest() 
+        public IActionResult ServerSecretTest()
+        {
+            var serverRes = AccessTokenRefreshWrapper(() => SecuredGet("https://localhost:5001/secret/Secret")).Result;
+
+            var apiRes = AccessTokenRefreshWrapper(() => SecuredGet("https://localhost:5004/secret/index")).Result;
+
+            // var token = HttpContext.GetTokenAsync("access_token").Result;
+
+            // var serverClient = _httpClientFactory.CreateClient();
+
+            // serverClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+            // var response = serverClient.GetAsync("https://localhost:5001/secret/Secret").Result;
+
+            // RefreshAccessToken().Wait();
+
+            // token = HttpContext.GetTokenAsync("access_token").Result;
+
+            // var apiClient = _httpClientFactory.CreateClient();
+
+            // apiClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+
+            // var apiResponse = apiClient.GetAsync("https://localhost:5004/secret/index").Result;
+
+            return Ok();
+        }
+
+        private async Task<HttpResponseMessage> SecuredGet(
+            string url
+        )
         {
             var token = HttpContext.GetTokenAsync("access_token").Result;
 
@@ -61,11 +92,72 @@ namespace OAuthClient.Controllers
 
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
 
-            var response = client.GetAsync("https://localhost:5001/secret/Secret").Result;
+            return await client.GetAsync(url);
+        }
 
-            var apiResponse = client.GetAsync("https://localhost:5004/secret/index").Result;
+        public async Task<HttpResponseMessage> AccessTokenRefreshWrapper(
+            Func<Task<HttpResponseMessage>> inputRequest
+        )
+        {
+            var intiRes = await inputRequest();
 
-            return Ok();
+            if (intiRes.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await RefreshAccessToken();
+                intiRes = await inputRequest();
+            }
+
+            return intiRes;
+        }
+
+        public async Task RefreshAccessToken()
+        {
+            var refreshToken = await HttpContext.GetTokenAsync("refresh_token"); // returned from initial login
+
+            var refreshTokenClient = _httpClientFactory.CreateClient();
+
+            var data = new Dictionary<string, string>()
+            {
+                ["grant_type"] = "refresh_token",
+                ["refresh_token"] = refreshToken
+            };
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "https://localhost:5001/oauth/token")
+            {
+                Content = new FormUrlEncodedContent(data)
+            };
+
+            var basicCredentials = "username:password"; // fake one to satisfy documentation
+            var encodedCred = Convert.ToBase64String(
+                        System.Text.Encoding.UTF8
+                        .GetBytes(basicCredentials));
+
+            request.Headers.Add("Authorization", $"Basic {encodedCred}");
+
+            var res = refreshTokenClient.SendAsync(request).Result;
+
+            var resDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(res.Content.ReadAsStringAsync().Result);
+
+            var newAccessToken = resDic["access_token"];
+            var newRefreshToken = resDic["refresh_token"];
+
+            var authInfo = await HttpContext.AuthenticateAsync("CookieScheme");
+
+            authInfo
+            .Properties
+            .UpdateTokenValue("access_token", newAccessToken);
+
+            authInfo
+            .Properties
+            .UpdateTokenValue("refresh_token", newRefreshToken);
+
+            await HttpContext
+            .SignInAsync(
+                "CookieScheme",
+                authInfo.Principal,
+                authInfo.Properties);
         }
     }
 }

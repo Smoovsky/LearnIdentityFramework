@@ -57,7 +57,7 @@ namespace OAuthResourceApi
 
     public class CustomAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        protected CustomAuthenticationHandler(
+        public CustomAuthenticationHandler(
             Microsoft.Extensions.Options.IOptionsMonitor<AuthenticationSchemeOptions> options,
             Microsoft.Extensions.Logging.ILoggerFactory logger,
             System.Text.Encodings.Web.UrlEncoder encoder,
@@ -83,7 +83,7 @@ namespace OAuthResourceApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication()
+            services.AddAuthentication("DefaultScheme")
                 .AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>("DefaultScheme", null);
 
             services.AddAuthorization(config =>

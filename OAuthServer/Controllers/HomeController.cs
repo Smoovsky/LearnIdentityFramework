@@ -88,7 +88,6 @@ namespace OAuthServer.Controllers
                 return Ok();
             }
 
-
             return BadRequest();
         }
     }

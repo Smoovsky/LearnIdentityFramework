@@ -60,7 +60,8 @@ namespace OAuthServer.Controllers
             string grant_type, // current flow
             string code,
             string redirect_uri,
-            string client_id
+            string client_id,
+            string refresh_token
         )
         {
             // mechanism to validate code
@@ -82,7 +83,9 @@ namespace OAuthServer.Controllers
                 Constants.Audiance,
                 claims,
                 notBefore: DateTime.Now, // can be one of the claims, check JwtRegisteredClaimNames.Nbf out. Declares when the JWT starts to be valid
-                expires: DateTime.Now.AddDays(1),
+                expires: grant_type == "refresh_token"
+                    ? DateTime.Now.AddMinutes(10)
+                    : DateTime.Now.AddMilliseconds(1),
                 signingCredentials: signingCred
             );
 
@@ -92,7 +95,8 @@ namespace OAuthServer.Controllers
             {
                 access_token = token,
                 token_type = "Bearer",
-                raw_claim = "oauthExample"
+                raw_claim = "oauthExample",
+                refresh_token = "fake_refersh_token"
             };
 
             return Ok(response);
