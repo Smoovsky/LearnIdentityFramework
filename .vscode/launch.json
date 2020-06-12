@@ -5,6 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "OAuthResourceApi",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildOAuthResourceApi",
+            "program": "${workspaceFolder}/OAuthResourceApi/bin/Debug/netcoreapp5.0/OAuthResourceApi.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/OAuthResourceApi",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "OAuthServer",
             "type": "coreclr",
             "request": "launch",
