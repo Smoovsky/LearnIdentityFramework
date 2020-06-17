@@ -5,6 +5,46 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "IdentityServer.Api1",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildIdentityServer.Api1",
+            "program": "${workspaceFolder}/IdentityServer.Api1/bin/Debug/net5.0/IdentityServer.Api1.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/IdentityServer.Api1",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "IdentityServer",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildIdentityServer",
+            "program": "${workspaceFolder}/IdentityServer/bin/Debug/net5.0/IdentityServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/IdentityServer",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "OAuthResourceApi",
             "type": "coreclr",
             "request": "launch",
