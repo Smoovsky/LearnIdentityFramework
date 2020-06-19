@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SimpleAuth.ClaimTransform;
 
-namespace LearnIdentityFramework
+namespace SimpleAuth
 {
     public class Startup
     {

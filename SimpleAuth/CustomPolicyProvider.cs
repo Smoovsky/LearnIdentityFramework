@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 
-namespace LearnIdentityFramework
+namespace SimpleAuth
 {
     public static class DynamicPolicies
     {
