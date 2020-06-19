@@ -23,12 +23,12 @@ namespace IdentityServer.Api1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication()
-            .AddJwtBearer(config =>
+            services.AddAuthentication("jwtScheme")
+            .AddJwtBearer("jwtScheme", config =>
             {
                 // o.MetadataAddress = "h"
-                config.Authority = "https://localhost:5001/";
-                config.Audience = "ApiOne";
+                config.Authority = "https://localhost:6001/";
+                config.Audience = "api1";
             });
 
             services.AddControllersWithViews();

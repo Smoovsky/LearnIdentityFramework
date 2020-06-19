@@ -42,7 +42,7 @@ namespace IdentityServer.Api2.Controllers
                     Address = discoveryDocument.TokenEndpoint,
                     ClientId = "client1",
                     ClientSecret = "client1secret",
-                    Scope = "ApiOne"
+                    Scope = "api1"
                 }
             )
             .Result;
