@@ -36,6 +36,16 @@ namespace IdentityServer
                         GrantType.ClientCredentials
                     },
                     AllowedScopes = {"api1"}
+                },
+                new Client()
+                {
+                    ClientId = "clientMvc",
+                    ClientSecrets =
+                    {
+                        new Secret("clientMvcSecret".ToSha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowedScopes = {"api1"}
                 }
             };
     }
