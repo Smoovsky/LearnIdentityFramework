@@ -8,49 +8,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using IdentityServer4.Models;
-using IdentityModel;
 
-namespace IdentityServer
+namespace IdentityServer.MvcClient
 {
-    public static class Config
-    {
-        public static IEnumerable<ApiResource> GetApiResources() =>
-            new List<ApiResource>()
-            {
-                new ApiResource("api1"),
-                new ApiResource("api2")
-            };
-
-        public static IEnumerable<Client> GetClients() =>
-            new List<Client>()
-            {
-                new Client()
-                {
-                    ClientId = "client1",
-                    ClientSecrets =
-                    {
-                        new Secret("client1secret".ToSha256())
-                    },
-                    AllowedGrantTypes =
-                    {
-                        GrantType.ClientCredentials
-                    },
-                    AllowedScopes = {"api1"}
-                },
-                new Client()
-                {
-                    ClientId = "clientMvc",
-                    ClientSecrets =
-                    {
-                        new Secret("clientMvcSecret".ToSha256())
-                    },
-                    AllowedGrantTypes = GrantTypes.Code,
-                    AllowedScopes = {"api1", "api2"}
-                }
-            };
-    }
-    // https://localhost:5001/.well-known/openid-configuration
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -65,10 +25,7 @@ namespace IdentityServer
         {
             services.AddControllersWithViews();
 
-            services.AddIdentityServer()
-            .AddInMemoryApiResources(Config.GetApiResources())
-            .AddInMemoryClients(Config.GetClients())
-            .AddDeveloperSigningCredential();
+            services.Add
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,8 +45,6 @@ namespace IdentityServer
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseIdentityServer();
 
             app.UseAuthorization();
 

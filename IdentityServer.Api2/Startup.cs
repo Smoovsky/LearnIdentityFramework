@@ -29,8 +29,8 @@ namespace IdentityServer.Api2
             .AddJwtBearer(config =>
             {
                 // o.MetadataAddress = "h"
-                config.Authority = "https://localhost:5001/";
-                config.Audience = "ApiTwo";
+                config.Authority = "https://localhost:6001/";
+                config.Audience = "api2";
             });
 
             services.AddHttpClient();
@@ -53,6 +53,8 @@ namespace IdentityServer.Api2
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
