@@ -23,6 +23,17 @@ namespace IdentityServer.Controllers
             return View();
         }
 
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginViewModel loginModel)
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -33,5 +44,11 @@ namespace IdentityServer.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+    }
+
+    public class LoginViewModel
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 }

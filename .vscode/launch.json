@@ -5,6 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "IdentityServer.MvcClient",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildIdentityServer.MvcClient",
+            "program": "${workspaceFolder}/IdentityServer.MvcClient/bin/Debug/net5.0/IdentityServer.MvcClient.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/IdentityServer.MvcClient",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "IdentityServer.Api2",
             "type": "coreclr",
             "request": "launch",

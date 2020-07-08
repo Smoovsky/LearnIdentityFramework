@@ -10,11 +10,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using IdentityServer4.Models;
 using IdentityModel;
+using IdentityServer4;
+using IdentityServer.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer
 {
     public static class Config
     {
+        public static IEnumerable<IdentityResource> GetIdentityResources() => new List<IdentityResource>()
+        {
+            new IdentityResources.OpenId(),
+            new IdentityResources.Profile()
+        };
+
         public static IEnumerable<ApiResource> GetApiResources() =>
             new List<ApiResource>()
             {
@@ -46,7 +56,15 @@ namespace IdentityServer
                         new Secret("clientMvcSecret".ToSha256())
                     },
                     AllowedGrantTypes = GrantTypes.Code,
-                    AllowedScopes = {"api1", "api2"}
+                    AllowedScopes =
+                    {
+                        "api1",
+                        "api2",
+                        // "openid" // note: openid is an identity resource
+                        IdentityServerConstants.StandardScopes.OpenId, // or this 
+                        IdentityServerConstants.StandardScopes.Profile
+                    },
+                    RedirectUris = new []{"https://localhost:8001/signin-oidc"}
                 }
             };
     }
@@ -65,7 +83,23 @@ namespace IdentityServer
         {
             services.AddControllersWithViews();
 
+            services.AddDbContext<AppDbContext>(
+                config => config.UseInMemoryDatabase("app")
+            );
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(
+            config =>
+            {
+                config.Cookie.Name = "Identity.Cookie";
+                config.LoginPath = "/home/login";
+            });
+
             services.AddIdentityServer()
+            .AddInMemoryIdentityResources(Config.GetIdentityResources())
             .AddInMemoryApiResources(Config.GetApiResources())
             .AddInMemoryClients(Config.GetClients())
             .AddDeveloperSigningCredential();

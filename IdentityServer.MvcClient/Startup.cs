@@ -25,7 +25,21 @@ namespace IdentityServer.MvcClient
         {
             services.AddControllersWithViews();
 
-            services.Add
+            services.AddAuthentication(config =>
+                {
+                    config.DefaultScheme = "Cookie";
+                    config.DefaultChallengeScheme = "OIDC";
+                })
+                .AddCookie("Cookie")
+                .AddOpenIdConnect("OIDC", config =>
+                {
+                    config.Authority = "https://localhost:6001";
+                    config.ClientId = "clientMvc";
+                    config.ClientSecret = "clientMvcSecret";
+                    config.SaveTokens = true;
+
+                    config.ResponseType = "code";
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
