@@ -9,11 +9,11 @@ using IdentityServer.Models;
 
 namespace IdentityServer.Controllers
 {
-    public class HomeController : Controller
+    public class AuthController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public AuthController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
@@ -23,7 +23,8 @@ namespace IdentityServer.Controllers
             return View();
         }
 
-        public IActionResult Login()
+        [HttpGet]
+        public IActionResult Login(string returnUrl)
         {
             return View();
         }

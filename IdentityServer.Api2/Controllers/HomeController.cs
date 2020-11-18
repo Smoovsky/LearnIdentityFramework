@@ -43,8 +43,7 @@ namespace IdentityServer.Api2.Controllers
                     ClientId = "client1",
                     ClientSecret = "client1secret",
                     Scope = "api1"
-                }
-            )
+                })
             .Result;
 
             var apiClient = _httpClientFactory

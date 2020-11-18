@@ -95,7 +95,7 @@ namespace IdentityServer
             config =>
             {
                 config.Cookie.Name = "Identity.Cookie";
-                config.LoginPath = "/home/login";
+                config.LoginPath = "/auto/login";
             });
 
             services.AddIdentityServer()
