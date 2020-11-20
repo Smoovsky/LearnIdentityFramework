@@ -23,15 +23,14 @@ namespace IdentityServer.MvcClient
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
 
             services.AddAuthentication(config =>
                 {
                     config.DefaultScheme = "Cookie";
-                    config.DefaultChallengeScheme = "OIDC";
+                    config.DefaultChallengeScheme = "oidc";
                 })
                 .AddCookie("Cookie")
-                .AddOpenIdConnect("OIDC", config =>
+                .AddOpenIdConnect("oidc", config =>
                 {
                     config.Authority = "https://localhost:6001";
                     config.ClientId = "clientMvc";
@@ -40,6 +39,8 @@ namespace IdentityServer.MvcClient
 
                     config.ResponseType = "code";
                 });
+            services.AddControllersWithViews();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +61,7 @@ namespace IdentityServer.MvcClient
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

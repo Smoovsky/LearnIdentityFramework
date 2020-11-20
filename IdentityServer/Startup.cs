@@ -64,7 +64,8 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.OpenId, // or this 
                         IdentityServerConstants.StandardScopes.Profile
                     },
-                    RedirectUris = new []{"https://localhost:8001/signin-oidc"}
+                    RedirectUris = new []{"https://localhost:9001/signin-oidc"},
+                    RequireConsent = false,
                 }
             };
     }
@@ -87,7 +88,14 @@ namespace IdentityServer
                 config => config.UseInMemoryDatabase("app")
             );
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<IdentityUser, IdentityRole>(
+                config =>
+                {
+                    config.Password.RequiredLength = 4;
+                    config.Password.RequireDigit = false;
+                    config.Password.RequireNonAlphanumeric = false;
+                    config.Password.RequireUppercase = false;
+                })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -95,10 +103,12 @@ namespace IdentityServer
             config =>
             {
                 config.Cookie.Name = "Identity.Cookie";
-                config.LoginPath = "/auto/login";
+                config.LoginPath = "/auth/login";
             });
 
-            services.AddIdentityServer()
+            services
+            .AddIdentityServer()
+            .AddAspNetIdentity<IdentityUser>()
             .AddInMemoryIdentityResources(Config.GetIdentityResources())
             .AddInMemoryApiResources(Config.GetApiResources())
             .AddInMemoryClients(Config.GetClients())
@@ -108,24 +118,24 @@ namespace IdentityServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
+            // if (env.IsDevelopment())
+            // {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            // }
+            // else
+            // {
+            //     app.UseExceptionHandler("/Home/Error");
+            //     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //     app.UseHsts();
+            // }
+            // app.UseHttpsRedirection();
+            // app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseIdentityServer();
 
-            app.UseAuthorization();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
