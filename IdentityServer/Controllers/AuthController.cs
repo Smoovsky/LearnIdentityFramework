@@ -14,13 +14,15 @@ namespace IdentityServer.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         public SignInManager<IdentityUser> _signInManager;
+        public UserManager<IdentityUser> _userManager;
 
         public AuthController(
             ILogger<HomeController> logger,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -37,21 +39,57 @@ namespace IdentityServer.Controllers
             });
         }
 
+        [HttpGet]
+        public IActionResult Register(string returnUrl)
+        {
+            return View(new LoginViewModel
+            {
+                ReturnUrl = returnUrl
+            });
+        }
+
         [HttpPost]
         public IActionResult Login(LoginViewModel loginModel)
         {
-           var result = _signInManager
-           .PasswordSignInAsync(
-               loginModel.UserName,
-               loginModel.Password,
-               false,
-               false
-           ).Result;
+            var result = _signInManager
+            .PasswordSignInAsync(
+                loginModel.UserName,
+                loginModel.Password,
+                false,
+                false
+            ).Result;
 
-           if(result.Succeeded)
-           {
-               return Redirect(loginModel.ReturnUrl);
-           }
+            if (result.Succeeded)
+            {
+                return Redirect(loginModel.ReturnUrl);
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel registerModel)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(registerModel);
+            }
+
+            var user = new IdentityUser(
+                registerModel.UserName);
+
+            var result = _userManager
+                .CreateAsync(user, registerModel.Password)
+                .Result;
+
+            if (result.Succeeded)
+            {
+                _signInManager
+                .SignInAsync(user, false)
+                .Wait();
+
+                return Redirect(registerModel.ReturnUrl);
+            }
 
             return View();
         }
