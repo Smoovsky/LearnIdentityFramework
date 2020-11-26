@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,7 +24,6 @@ namespace IdentityServer.MvcClient
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddAuthentication(config =>
                 {
                     config.DefaultScheme = "Cookie";
@@ -34,13 +34,23 @@ namespace IdentityServer.MvcClient
                 {
                     config.Authority = "https://localhost:6001";
                     config.ClientId = "clientMvc";
-                    config.ClientSecret = "clientMvcSecret";
+                config.ClientSecret = "clientMvcSecret";
                     config.SaveTokens = true;
 
                     config.ResponseType = "code";
+
+                    config.GetClaimsFromUserInfoEndpoint = true; // two trip to fetch claims!
+
+                    config.ClaimActions.MapUniqueJsonKey("mvcClient.trait", "trait");
+                    // config.ClaimActions.DeleteClaim(<claim to delete>);
+
+                    config.Scope.Add("trait.scope");
+                    config.Scope.Add("api1");
                 });
+
             services.AddControllersWithViews();
-            
+
+            services.AddHttpClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -27,6 +28,12 @@ namespace IdentityServer
 
                 userManger
                 .CreateAsync(user, "password")
+                .Wait();
+
+                userManger
+                .AddClaimAsync(
+                    user,
+                    new Claim("trait", "aho"))
                 .Wait();
             }
 

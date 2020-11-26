@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using IdentityServer.MvcClient.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
+using IdentityModel.Client;
 
 namespace IdentityServer.MvcClient.Controllers
 {
@@ -14,9 +18,14 @@ namespace IdentityServer.MvcClient.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public HomeController(
+            ILogger<HomeController> logger,
+            IHttpClientFactory fac)
         {
             _logger = logger;
+            _httpClientFactory = fac;
         }
 
         public IActionResult Index()
@@ -27,6 +36,18 @@ namespace IdentityServer.MvcClient.Controllers
         [Authorize]
         public IActionResult Secret()
         {
+            var idToken = HttpContext.GetTokenAsync("id_token").Result;
+            var accessToken = HttpContext.GetTokenAsync("access_token").Result;
+            var refressToken = HttpContext.GetTokenAsync("refresh_token").Result;
+
+            var idTokenContent = new JwtSecurityTokenHandler().ReadJwtToken(idToken);
+            var accessTokenContent = new JwtSecurityTokenHandler().ReadJwtToken(accessToken);
+            // var idTokenContent = new JwtSecurityTokenHandler().ReadJwtToken(idToken);
+
+            var user = HttpContext.User;
+
+            var result = GetSecret(accessToken);
+
             return View();
         }
 
@@ -39,6 +60,26 @@ namespace IdentityServer.MvcClient.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public string GetSecret(string accessToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+
+            // client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+
+            client.SetBearerToken(accessToken);
+
+            var res = client
+                .GetAsync("https://localhost:7001/secret") //api1
+                .Result;
+
+            var content = res
+                .Content
+                .ReadAsStringAsync()
+                .Result;
+
+            return content;
         }
     }
 }

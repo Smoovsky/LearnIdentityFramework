@@ -22,14 +22,35 @@ namespace IdentityServer
         public static IEnumerable<IdentityResource> GetIdentityResources() => new List<IdentityResource>()
         {
             new IdentityResources.OpenId(),
-            new IdentityResources.Profile()
+            new IdentityResources.Profile(),
+            new IdentityResource
+            {
+                Name = "trait.scope",
+                UserClaims =
+                {
+                    "trait"
+                }
+            }
         };
 
         public static IEnumerable<ApiResource> GetApiResources() =>
             new List<ApiResource>()
             {
-                new ApiResource("api1"),
+                new ApiResource("api1")
+                {
+                    Scopes = {"api1"}
+                },
                 new ApiResource("api2")
+                {
+                    Scopes = {"api2"}
+                }
+            };
+
+        public static IEnumerable<ApiScope> GetApiScopes() =>
+            new List<ApiScope>()
+            {
+                new ApiScope("api1"),
+                new ApiScope("api2")
             };
 
         public static IEnumerable<Client> GetClients() =>
@@ -62,10 +83,12 @@ namespace IdentityServer
                         "api2",
                         // "openid" // note: openid is an identity resource
                         IdentityServerConstants.StandardScopes.OpenId, // or this 
-                        IdentityServerConstants.StandardScopes.Profile
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "trait.scope"
                     },
                     RedirectUris = new []{"https://localhost:9001/signin-oidc"},
                     RequireConsent = false,
+                    // AlwaysIncludeUserClaimsInIdToken = true // active send claims
                 }
             };
     }
@@ -110,6 +133,7 @@ namespace IdentityServer
             .AddIdentityServer()
             .AddAspNetIdentity<IdentityUser>()
             .AddInMemoryIdentityResources(Config.GetIdentityResources())
+            .AddInMemoryApiScopes(Config.GetApiScopes())
             .AddInMemoryApiResources(Config.GetApiResources())
             .AddInMemoryClients(Config.GetClients())
             .AddDeveloperSigningCredential();
@@ -120,7 +144,7 @@ namespace IdentityServer
         {
             // if (env.IsDevelopment())
             // {
-                app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
             // }
             // else
             // {

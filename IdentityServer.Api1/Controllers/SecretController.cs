@@ -22,6 +22,8 @@ namespace IdentityServer.Api1.Controllers
         [Authorize]
         public string Index()
         {
+            var claims = User.Claims;
+
             return "secret from Api1";
         }
 

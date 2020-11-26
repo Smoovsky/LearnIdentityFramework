@@ -42,7 +42,7 @@ namespace IdentityServer.Controllers
         [HttpGet]
         public IActionResult Register(string returnUrl)
         {
-            return View(new LoginViewModel
+            return View(new RegisterViewModel
             {
                 ReturnUrl = returnUrl
             });
@@ -64,7 +64,7 @@ namespace IdentityServer.Controllers
                 return Redirect(loginModel.ReturnUrl);
             }
 
-            return View();
+            return View(loginModel);
         }
 
         [HttpPost]
