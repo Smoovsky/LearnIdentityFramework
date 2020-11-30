@@ -35,6 +35,12 @@ namespace IdentityServer
                     user,
                     new Claim("trait", "aho"))
                 .Wait();
+
+                userManger
+                .AddClaimAsync(
+                    user,
+                    new Claim("api1.trait", "aho"))
+                .Wait();
             }
 
             host.Run();

@@ -46,6 +46,7 @@ namespace IdentityServer.MvcClient
 
                     config.Scope.Add("trait.scope");
                     config.Scope.Add("api1");
+                    config.Scope.Add("api2");
                 });
 
             services.AddControllersWithViews();

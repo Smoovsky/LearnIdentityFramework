@@ -36,7 +36,8 @@ namespace IdentityServer
         public static IEnumerable<ApiResource> GetApiResources() =>
             new List<ApiResource>()
             {
-                new ApiResource("api1")
+                new ApiResource("api1", new string[]{"api1.trait"}) // make this claim available to Api1
+                // note if access is granted to api2, same token would be available to acees api2 so that api2 will have access to this claim too
                 {
                     Scopes = {"api1"}
                 },
