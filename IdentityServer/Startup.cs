@@ -89,6 +89,7 @@ namespace IdentityServer
                     },
                     RedirectUris = new []{"https://localhost:9001/signin-oidc"},
                     RequireConsent = false,
+                    AllowOfflineAccess = true
                     // AlwaysIncludeUserClaimsInIdToken = true // active send claims
                 }
             };

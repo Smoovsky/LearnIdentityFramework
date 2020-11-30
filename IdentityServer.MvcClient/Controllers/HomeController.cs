@@ -79,7 +79,52 @@ namespace IdentityServer.MvcClient.Controllers
                 .ReadAsStringAsync()
                 .Result;
 
+            RefreshAccessToken().Wait();
+
             return content;
+        }
+
+        public async Task RefreshAccessToken()
+        {
+            var serverClient = _httpClientFactory
+                .CreateClient();
+
+            var doc = await serverClient
+                .GetDiscoveryDocumentAsync(
+                    "https://localhost:6001");
+
+            var refreshToken = await HttpContext.GetTokenAsync("refresh_token"); // returned from initial login
+
+            var refreshTokenClient = _httpClientFactory.CreateClient();
+
+            var tokenResponse = await refreshTokenClient.RequestRefreshTokenAsync(
+                new RefreshTokenRequest
+                {
+                    Address = doc.TokenEndpoint,
+                    RefreshToken = refreshToken,
+                    ClientId = "clientMvc",
+                    ClientSecret = "clientMvcSecret"
+                }
+            );
+
+            var authInfo = await HttpContext
+                .AuthenticateAsync("Cookie");
+
+            authInfo
+            .Properties
+            .UpdateTokenValue("access_token", tokenResponse.AccessToken);
+            authInfo
+            .Properties.UpdateTokenValue("id_token", tokenResponse.IdentityToken);
+
+            authInfo
+            .Properties
+            .UpdateTokenValue("refresh_token", tokenResponse.RefreshToken);
+
+            await HttpContext
+            .SignInAsync(
+                "Cookie",
+                authInfo.Principal,
+                authInfo.Properties);
         }
     }
 }

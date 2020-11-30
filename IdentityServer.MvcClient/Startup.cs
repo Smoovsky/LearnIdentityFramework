@@ -47,6 +47,7 @@ namespace IdentityServer.MvcClient
                     config.Scope.Add("trait.scope");
                     config.Scope.Add("api1");
                     config.Scope.Add("api2");
+                    config.Scope.Add("offline_access");
                 });
 
             services.AddControllersWithViews();
