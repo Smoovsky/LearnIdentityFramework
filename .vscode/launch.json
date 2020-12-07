@@ -5,6 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "ImplicitFlowJsClient",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildImplicitFlowJsClient",
+            "program": "${workspaceFolder}/ImplicitFlowJsClient/bin/Debug/net5.0/ImplicitFlowJsClient.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/ImplicitFlowJsClient",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "IdentityServer.MvcClient",
             "type": "coreclr",
             "request": "launch",
