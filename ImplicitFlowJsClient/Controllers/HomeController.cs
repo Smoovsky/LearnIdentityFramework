@@ -23,6 +23,11 @@ namespace ImplicitFlowJsClient.Controllers
             return View();
         }
 
+        public IActionResult SignIn()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

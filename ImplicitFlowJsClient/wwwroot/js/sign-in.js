@@ -8,7 +8,7 @@ var createNounce = function () {
 
 
 var signIn = function () {
-    var redirectUri = 'https://localhost:11001/signin';
+    var redirectUri = 'https://localhost:11001/home/signin';
     var responseType = 'id_token token';
     var scope = 'openid ApiOne';
 
