@@ -91,6 +91,27 @@ namespace IdentityServer
                     RequireConsent = false,
                     AllowOfflineAccess = true
                     // AlwaysIncludeUserClaimsInIdToken = true // active send claims
+                },
+                new Client()
+                {
+                    ClientId = "implicitFlowJsClient",
+                    ClientSecrets =
+                    {
+                        new Secret("implicitFlowJsClientSecret".ToSha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedScopes =
+                    {
+                        "api1",
+                        // "api2",
+                        // "openid" // note: openid is an identity resource
+                        IdentityServerConstants.StandardScopes.OpenId, // or this 
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "trait.scope"
+                    },
+                    RedirectUris = new []{"https://localhost:11001/signin"},
+                    RequireConsent = false,
+                    AllowAccessTokensViaBrowser = true
                 }
             };
     }
