@@ -111,7 +111,8 @@ namespace IdentityServer
                     },
                     RedirectUris = new []{"https://localhost:11001/signin"},
                     RequireConsent = false,
-                    AllowAccessTokensViaBrowser = true
+                    AllowAccessTokensViaBrowser = true,
+                    AllowCorsOrigins = {}
                 }
             };
     }
